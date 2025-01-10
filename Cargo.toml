@@ -19,6 +19,7 @@ edit = "0.1"
 crossterm = "0.27.0"
 ratatui = "0.26"
 opener = "0.6"
+itertools = "0.14.0"
 # Dependencies for the GUI
 egui = "0.28"
 eframe = "0.28"

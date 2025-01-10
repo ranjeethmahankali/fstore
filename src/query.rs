@@ -9,6 +9,7 @@ use crate::{
 };
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
+use itertools::Itertools;
 
 /// Tries to set the flag at the given index. If the index is outside the bounds
 /// of the vector, the vector is automatically resized. That is what makes it
@@ -76,12 +77,13 @@ pub(crate) struct TagTable {
 
 impl TagTable {
     fn query(&self, filter: Filter<usize>) -> impl Iterator<Item = std::path::Display<'_>> {
-        self.table.iter().filter_map(move |(path, flags)| {
-            if filter.eval(flags) {
-                Some(path.display())
-            } else {
-                None
-            }
+        // Filter before sorting so we're doing a little less work
+        let filtered = self.table.iter().filter(move |(_, flags)| {
+            filter.eval(flags)
+        });
+        let sorted = Itertools::sorted(filtered);
+        sorted.map(move |(path, _)| {
+            path.display()
         })
     }
 
